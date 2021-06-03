@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Categories
+from .models import Category
+
 
 class CategoriesAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
@@ -9,4 +10,4 @@ class CategoriesAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-admin.site.register(Categories, CategoriesAdmin)
+admin.site.register(Category, CategoriesAdmin)

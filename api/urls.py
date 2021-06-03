@@ -1,22 +1,25 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from .views import CategoriesViewSet, GenresViewSet
+from .views import CategoryViewSet, GenreViewSet, TitleViewSet
 
 v1_router = DefaultRouter()
 v1_router.register(
     'categories',
-    CategoriesViewSet,
+    CategoryViewSet,
     basename='categories-list'
 )
 v1_router.register(
     'genres',
-    GenresViewSet,
+    GenreViewSet,
     basename='genres-list'
+)
+v1_router.register(
+    'titles',
+    TitleViewSet,
+    basename='titles-list'
 )
 
 urlpatterns = [
