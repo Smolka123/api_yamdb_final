@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 migrations/
+sent_emails
 .Python
 build/
 develop-eggs/

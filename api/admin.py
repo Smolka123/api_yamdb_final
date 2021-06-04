@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category
+from .models import Category, User
 
 
 class CategoriesAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ class CategoriesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category, CategoriesAdmin)
+admin.site.register(User)
