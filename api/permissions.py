@@ -1,7 +1,7 @@
-from rest_framework import permissions
+from rest_framework.permissions import BasePermission
 
 
-class IsAdmin(permissions.BasePermission):
+class IsAdmin(BasePermission):
     """
     Administrator access rights.
     is_staff - Indicates whether the user has access to the admin interface.
