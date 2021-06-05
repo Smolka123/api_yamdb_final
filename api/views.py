@@ -3,7 +3,7 @@ import uuid
 from django.core.mail import send_mail
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, permissions, status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
@@ -15,7 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Category, Genre, Title, User
 from .permissions import IsAdmin, IsAdminOrReadOnly
-from .serializers import (CategoriesSerializer, GenresSerializer,
+from .serializers import (CategorySerializer, GenreSerializer,
                           ObtainingConfirmationCodeSerializer,
                           TitleReadSerializer, TitleWriteSerializer,
                           TokenSerializer, UserSerializer)
@@ -28,12 +28,6 @@ class TitleFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name='year')
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 100
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
-
-
 class BaseModelViewSet(mixins.ListModelMixin,
                        mixins.CreateModelMixin,
                        mixins.DestroyModelMixin,
@@ -43,9 +37,9 @@ class BaseModelViewSet(mixins.ListModelMixin,
 
 class CategoryViewSet(BaseModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategoriesSerializer
-    pagination_class = StandardResultsSetPagination
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = CategorySerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = [SearchFilter]
     search_fields = ('name', )
     lookup_field = 'slug'
@@ -53,9 +47,9 @@ class CategoryViewSet(BaseModelViewSet):
 
 class GenreViewSet(BaseModelViewSet):
     queryset = Genre.objects.all()
-    serializer_class = GenresSerializer
-    pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAdminOrReadOnly]
+    serializer_class = GenreSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = [SearchFilter]
     search_fields = ('name', )
     lookup_field = 'slug'
@@ -63,8 +57,8 @@ class GenreViewSet(BaseModelViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAdminOrReadOnly]
+    pagination_class = PageNumberPagination
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitleFilter
 
@@ -80,7 +74,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
     lookup_field = 'username'
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [SearchFilter]
     search_fields = ('username', )
 
     @action(detail=False, methods=['get', 'patch'],

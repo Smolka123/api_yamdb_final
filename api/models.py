@@ -1,11 +1,9 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser
-# from django.contrib.auth import get_user_model
 from django.db import models
 
 
-# User = get_user_model()
 class User(AbstractUser):
     """
     New class CustomUser which is based on AbstractUser.

@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import serializers
 
 from .models import Category, Genre, Title, User
@@ -29,13 +31,13 @@ class TokenSerializer(serializers.Serializer):
     confirmation_code = serializers.CharField(required=True)
 
 
-class CategoriesSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Category
 
 
-class GenresSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Genre
@@ -56,10 +58,19 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Title
 
+    def validate_year(self, year):
+        """
+        Checking the title's year is in the valid range
+        """
+        if year > date.today().year + 10 or year < -40000:
+            message = f'the year {year} is outside the valid date range'
+            raise serializers.ValidationError(message)
+        return year
+
 
 class TitleReadSerializer(serializers.ModelSerializer):
-    genre = GenresSerializer(many=True, read_only=True)
-    category = CategoriesSerializer(read_only=True)
+    genre = GenreSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         fields = ('id', 'name', 'year', 'genre', 'category', 'description')
