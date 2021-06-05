@@ -68,7 +68,7 @@ class Title(models.Model):
         blank=True,
         null=True,
     )
-    rank = models.IntegerField(default=0,
+    rating = models.IntegerField(default=0,
                                  blank=True)
 
     def __str__(self) -> str:
@@ -91,7 +91,7 @@ class Review(models.Model):
     pub_date = models.DateTimeField(verbose_name='Дата создания',
                                     auto_now_add=True)
     
-    class Meta():
+    class Meta:
         ordering = ["-pub_date"]
 
 
@@ -101,12 +101,12 @@ class Comments(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="comments")
     comment_text = models.TextField(verbose_name='Текст комментария',
-                            max_length=300)
+                                    max_length=300)
     pub_date = models.DateTimeField(verbose_name='Дата создания',
-                                        auto_now_add=True)
+                                    auto_now_add=True)
     
     def __str__(self):
         return self.review_id
     
-    class Meta():
+    class Meta:
         ordering = ["-pub_date"]

@@ -29,12 +29,12 @@ v1_router.register(
 v1_router.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
-    basename='review'
+    basename='review-list'
 )
 v1_router.register(
-    r'tlties/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentViewSet,
-    basename='comment'
+    basename='comment-list'
 )
 
 urlpatterns = [

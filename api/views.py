@@ -140,7 +140,8 @@ class TokenView(APIView):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id',))
@@ -157,13 +158,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
+    pagination_class = PageNumberPagination
     
 
     def perform_create(self, serializer):
         title_id = self.kwargs['title_id']
         title = get_object_or_404(Title, id=title_id)
         serializer.save(author=self.request.user, title=title)
-        self.get_rank(title)
+        self.get_rating(title)
 
     def get_queryset(self):
         title_id = self.kwargs['title_id']
@@ -171,7 +173,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         queryset = title.reviews.all()
         return queryset
 
-    def get_rank(self, title):
-        rank = self.get_queryset().aggregate(Avg('score'))
-        title.rank = round(rank['score__avg'], 2)
-        title.save(update_fields=['rank'])
+    def get_rating(self, title):
+        rating = self.get_queryset().aggregate(Avg('score'))
+        title.rating = round(rating['score__avg'], 2)
+        title.save(update_fields=['rating'])
