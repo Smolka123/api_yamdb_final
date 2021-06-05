@@ -44,6 +44,9 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        ordering = ['-name']
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=200)
@@ -51,6 +54,9 @@ class Genre(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        ordering = ['-name']
 
 
 class Title(models.Model):
@@ -68,11 +74,18 @@ class Title(models.Model):
         blank=True,
         null=True,
     )
-    rating = models.IntegerField(default=0,
-                                 blank=True)
+    rating = models.IntegerField(
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1),
+        MaxValueValidator(10)]
+    )
 
     def __str__(self) -> str:
         return self.name
+    
+    class Meta:
+        ordering = ['-rating']
 
 
 class Review(models.Model):
@@ -92,16 +105,15 @@ class Review(models.Model):
                                     auto_now_add=True)
     
     class Meta:
-        ordering = ["-pub_date"]
+        ordering = ['-pub_date']
 
 
 class Comments(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE,
-                               related_name="comments")
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name="comments")
-    comment_text = models.TextField(verbose_name='Текст комментария',
-                                    max_length=300)
+                               related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE,)
+    text = models.TextField(verbose_name='Текст комментария',
+                            max_length=300)
     pub_date = models.DateTimeField(verbose_name='Дата создания',
                                     auto_now_add=True)
     
@@ -109,4 +121,4 @@ class Comments(models.Model):
         return self.review_id
     
     class Meta:
-        ordering = ["-pub_date"]
+        ordering = ['-pub_date']

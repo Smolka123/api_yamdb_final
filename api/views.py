@@ -1,7 +1,7 @@
 import uuid
 
 from django.core.mail import send_mail
-from django.db.models.aggregates import Avg
+from django.db.models.aggregates import Avg, Count
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
@@ -140,40 +140,27 @@ class TokenView(APIView):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get('review_id',))
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         return review.comments.all()
-
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user,
-                        review_id=self.kwargs.get('review_id',),
-                        title_id=self.kwargs.get('title_id',))
+                        review_id=self.kwargs.get('review_id'))
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
     pagination_class = PageNumberPagination
     
+    def get_queryset(self):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return title.reviews.all()
 
     def perform_create(self, serializer):
-        title_id = self.kwargs['title_id']
-        title = get_object_or_404(Title, id=title_id)
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         serializer.save(author=self.request.user, title=title)
-        self.get_rating(title)
-
-    def get_queryset(self):
-        title_id = self.kwargs['title_id']
-        title = get_object_or_404(Title, pk=title_id)
-        queryset = title.reviews.all()
-        return queryset
-
-    def get_rating(self, title):
-        rating = self.get_queryset().aggregate(Avg('score'))
-        title.rating = round(rating['score__avg'], 2)
-        title.save(update_fields=['rating'])
