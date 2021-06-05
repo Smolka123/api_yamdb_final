@@ -1,10 +1,9 @@
 from datetime import date
 
 from rest_framework import serializers
-
-from .models import Category, Genre, Title, Comments, Review, User
-
 from rest_framework.generics import get_object_or_404
+
+from .models import Category, Comments, Genre, Review, Title, User
 
 
 class UserSerializer(serializers.ModelSerializer):
