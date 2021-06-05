@@ -27,7 +27,7 @@ function global:deactivate ([switch]$NonDestructive) {
 
 deactivate -nondestructive
 
-$env:VIRTUAL_ENV="E:\dev\api_yamdb\virtual_environment"
+$env:VIRTUAL_ENV="E:\dev\Projects_praktikum\api_yamdb\virtual_environment"
 
 if (! $env:VIRTUAL_ENV_DISABLE_PROMPT) {
     # Set the prompt to include the env name

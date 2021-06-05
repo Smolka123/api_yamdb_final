@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="E:\dev\api_yamdb\virtual_environment"
+VIRTUAL_ENV="E:\dev\Projects_praktikum\api_yamdb\virtual_environment"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

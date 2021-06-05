@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set "VIRTUAL_ENV=E:\dev\api_yamdb\virtual_environment"
+set "VIRTUAL_ENV=E:\dev\Projects_praktikum\api_yamdb\virtual_environment"
 
 if not defined PROMPT (
     set "PROMPT=$P$G"
