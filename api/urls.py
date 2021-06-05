@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (CategoryViewSet, GenreViewSet,
                     ObtainingConfirmationCodeView, TitleViewSet, TokenView,
-                    UserViewSet)
+                    UserViewSet, CommentViewSet, ReviewViewSet)
 
 v1_router = DefaultRouter()
 v1_router.register(
@@ -26,6 +26,16 @@ v1_router.register(
     'users',
     UserViewSet
 )
+v1_router.register(
+    r'titles/(?P<title_id>\d+)/reviews',
+    ReviewViewSet,
+    basename='review'
+)
+v1_router.register(
+    r'tlties/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    CommentViewSet,
+    basename='comment'
+)
 
 urlpatterns = [
     path('v1/',
@@ -39,4 +49,4 @@ urlpatterns = [
     path('v1/token/refresh/',
          TokenRefreshView.as_view(),
          name='token_refresh'),
-]
+    ]

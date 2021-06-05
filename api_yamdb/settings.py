@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'api',
+    
 ]
 
 MIDDLEWARE = [
@@ -99,8 +100,7 @@ AUTH_USER_MODEL = 'api.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly', ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],

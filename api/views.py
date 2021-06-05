@@ -1,6 +1,7 @@
 import uuid
 
 from django.core.mail import send_mail
+from django.db.models.aggregates import Avg
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
@@ -13,12 +14,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Category, Genre, Title, User
+from .models import Category, Genre, Title, Review, User
 from .permissions import IsAdmin, IsAdminOrReadOnly
 from .serializers import (CategorySerializer, GenreSerializer,
                           ObtainingConfirmationCodeSerializer,
                           TitleReadSerializer, TitleWriteSerializer,
-                          TokenSerializer, UserSerializer)
+                          TokenSerializer, UserSerializer,CommentSerializer,
+                          ReviewSerializer)
+
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from .permissions import IsAuthorOrStaffOrReadOnly
+
 
 
 class TitleFilter(filters.FilterSet):
@@ -133,3 +140,42 @@ class TokenView(APIView):
         user.save()
         refresh_token = RefreshToken.for_user(user)
         return Response({'token': str(refresh_token.access_token)})
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
+
+    def get_queryset(self):
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id',))
+        return review.comments.all()
+
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user,
+                        review_id=self.kwargs.get('review_id',),
+                        title_id=self.kwargs.get('title_id',))
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrStaffOrReadOnly)
+    
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs['title_id']
+        title = get_object_or_404(Title, id=title_id)
+        serializer.save(author=self.request.user, title=title)
+        self.get_rank(title)
+
+    def get_queryset(self):
+        title_id = self.kwargs['title_id']
+        title = get_object_or_404(Title, pk=title_id)
+        queryset = title.reviews.all()
+        return queryset
+
+    def get_rank(self, title):
+        rank = self.get_queryset().aggregate(Avg('score'))
+        title.rank = round(rank['score__avg'], 2)
+        title.save(update_fields=['rank'])
