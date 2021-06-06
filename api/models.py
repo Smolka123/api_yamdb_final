@@ -76,8 +76,7 @@ class Title(models.Model):
     rating = models.IntegerField(
         blank=True,
         null=True,
-        validators=[MinValueValidator(1),
-        MaxValueValidator(10)],
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
 
     def __str__(self) -> str:
