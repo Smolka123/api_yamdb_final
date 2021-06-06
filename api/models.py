@@ -77,12 +77,12 @@ class Title(models.Model):
         blank=True,
         null=True,
         validators=[MinValueValidator(1),
-        MaxValueValidator(10)]
+        MaxValueValidator(10)],
     )
 
     def __str__(self) -> str:
         return self.name
-    
+
     class Meta:
         ordering = ['-rating']
 
@@ -94,15 +94,15 @@ class Review(models.Model):
     text = models.TextField(verbose_name='Текст отзыва',
                             max_length=300)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name="reviews")                        
+                               related_name="reviews")
     score = models.IntegerField(
         'Оценка', blank=True,
         validators=[MinValueValidator(1, 'Не меньше 1'),
-                    MaxValueValidator(10, 'Не больше 10')] 
+                    MaxValueValidator(10, 'Не больше 10')]
     )
     pub_date = models.DateTimeField(verbose_name='Дата создания',
                                     auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-pub_date']
 
@@ -115,9 +115,9 @@ class Comments(models.Model):
                             max_length=300)
     pub_date = models.DateTimeField(verbose_name='Дата создания',
                                     auto_now_add=True)
-    
+
     def __str__(self):
         return self.review_id
-    
+
     class Meta:
         ordering = ['-pub_date']

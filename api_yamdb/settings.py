@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'api',
-    
 ]
 
 MIDDLEWARE = [
@@ -113,7 +112,7 @@ REST_FRAMEWORK = {
 # Token preset.
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    }
+}
 
 # Emulator for sending emails (for development), the sent_emails file accepts.
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
