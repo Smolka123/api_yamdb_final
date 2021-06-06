@@ -1,10 +1,10 @@
 from datetime import date
 
+from django.db.models.aggregates import Avg
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from .models import Category, Comments, Genre, Review, Title, User
-from django.db.models.aggregates import Avg
 
 
 class UserSerializer(serializers.ModelSerializer):

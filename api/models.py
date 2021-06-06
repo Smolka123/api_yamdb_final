@@ -10,7 +10,6 @@ class User(AbstractUser):
     New class CustomUser which is based on AbstractUser.
     Making the email field required and unique.
     """
-
     class UserRoles(models.TextChoices):
         """
         An iterator that will be used as value variants for the role field.
