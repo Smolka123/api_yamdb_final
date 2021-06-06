@@ -120,8 +120,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             pk=self.context['view'].kwargs.get('title_id')
         )
         author = self.context['request'].user
-        if (Review.objects.filter(title=title, author=author).exists() and
-            self.context['request'].method == 'POST'):
+        if (Review.objects.filter(title=title, author=author).exists()
+                and self.context['request'].method == 'POST'):
             raise serializers.ValidationError(
                 'Нельзя публиковать больше одного отзыва на Title'
             )
